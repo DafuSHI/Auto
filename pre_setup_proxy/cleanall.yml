@@ -1,0 +1,44 @@
+- name : Setting up all the machines prepared for installing Openshift
+  hosts : vm_kubernetes
+  sudo : True
+  vars : 
+    ansible_pkg_mgr: yum
+  tasks :
+    - name: Stop the serive of the Tproxy
+      shell: cd /product/tproxy/; /usr/local/bin/docker-compose stop
+      ignore_errors: True
+
+    - name: delete the 3 containers of tproxy
+      shell: cd /product/tproxy; /usr/local/bin/docker-compose rm -f
+      register: tproxy
+      ignore_errors: True
+    - debug: var=tproxy
+
+    - name: delete the yml file of docker-compose
+      file: path=/usr/local/bin/docker-compose state=absent
+
+    - name: delete certificate tgz
+      file: path=/etc/docker/certs.d.tgz state=absent
+
+    - name: delete certificate directory
+      file: path=/etc/docker/certs.d state=absent
+
+    - name: delete docker
+      yum: name=docker state=absent
+      ignore_errors: True
+      
+    - name: Delete docker if it is there
+      file: path=/var/lib/docker state=absent
+      ignore_errors: True
+    
+    - name: Delete tproxy if it is there
+      file: path=/product/tproxy/ state=absent
+
+    - name: Delete origin if it is there
+      file: path=/var/lib/origin state=absent
+
+    - name: Delete the product directory
+      file: path=/product/var state=absent
+
+    - name: Delete the product directory 2
+      file: path=/product/tproxy state=absent

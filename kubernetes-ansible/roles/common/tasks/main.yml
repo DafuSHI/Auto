@@ -1,0 +1,39 @@
+---
+- name: Determine if Atomic
+  stat: path=/run/ostree-booted
+  register: s
+  changed_when: false
+
+- name: Init the is_atomic fact
+  set_fact:
+    is_atomic: false
+
+- name: Set the is_atomic fact
+  set_fact:
+    is_atomic: true
+  when: s.stat.exists
+
+- name: Determine if RHEL7
+  shell: "grep 'Red Hat Enterprise Linux.*release 7' /etc/redhat-release"
+  register: is_rhel7
+  failed_when: false
+  changed_when: false
+
+- name: Determine if firewalld installed
+  command: "rpm -q firewalld"
+  register: has_firewalld
+  failed_when: "'package firewalld is not installed' not in has_firewalld.stdout and has_firewalld.rc != 0"
+  changed_when: false
+
+- name: Determine if iptables-services installed
+  command: "rpm -q iptables-services"
+  register: has_iptables
+  failed_when: "'package iptables-services is not installed' not in has_iptables.stdout and has_iptables.rc != 0"
+  changed_when: false
+
+- name: Set IP address variables
+  set_fact:
+    master_ip_address: "{{ hostvars[groups['masters'][0]]['ansible_default_ipv4']['address'] }}"
+    etcd_ip_address: "{{ hostvars[groups['etcd'][0]]['ansible_default_ipv4']['address'] }}"
+
+- include: aws.yml

@@ -1,0 +1,29 @@
+This is an automation script for deploying kubernetes in a fast way. You should point out in the inventory files which mahcine you want to be master and which machines can be minion. Exemples are shown in it. The networking is set to use OpenVswitch,while there are other options too.
+
+Pre-request:
+Docker daemon 1.10.1
+
+Step0:
+
+In file inventory, right down the ip address of your machine. You must set no password logging for all the machine for the ansible machine
+
+
+Step 1:
+
+./proxy.sh
+
+This is for setting the proxy for the machine inside in network of Gemalto
+
+
+Step 2:
+
+./networking.sh
+
+This is for setting the right netwoking for kubernetes. As docker only works in one machine,we must configure them to appear in the same overlay network. Here we use OVS
+
+
+Step 3:
+
+./kubernetes.sh
+
+Run it and let it do the rest

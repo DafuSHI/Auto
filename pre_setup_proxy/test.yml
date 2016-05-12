@@ -1,0 +1,11 @@
+- name : Setting up all the machines prepared for installing Openshift
+  hosts : local
+  sudo : True
+  tasks :
+    - name: To check out if docker-compose is still working
+      get_url: url=http://www.google.fr dest=/root/Ansible/result
+      register: result
+      ignore_errors: True
+    - debug: var=result
+    - debug: msg="Success"
+      

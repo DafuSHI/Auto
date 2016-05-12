@@ -1,0 +1,9 @@
+[all]
+vgerndvud1672
+localhost ansible_connection=local
+[vm_openshift]
+vgerndvud1672
+[vm_kubernetes]
+10.10.163.95 
+[local]
+localhost ansible_connection=local

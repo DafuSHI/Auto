@@ -1,0 +1,89 @@
+- name : Setting up all the machines prepared for installing Openshift
+  hosts : vm_kubernetes
+  sudo : True
+  tasks :
+  - name: Creats directory tproxy product
+    file: path=/product/tproxy state=directory
+
+  - name: Creats directory docker product
+    file: path=/product/var/lib/docker state=directory
+
+  - name: Creats directory origin product
+    file: path=/product/var/lib/origin state=directory
+
+  #- name: Creats  directory origin 
+  #  file: path=/var/lib/origin state=directory
+  - name: Check if /var/lib/docker is already there
+    stat: path=/var/lib/docker
+    register: dockerIsThere
+
+  - name: Delete docker file if it is there
+    file: path=/var/lib/docker state=absent
+    when: dockerIsThere.stat.exists == True
+    ignore_errors: True
+
+  - name: Check if /var/lib/origin is already there
+    stat: path=/var/lib/origin
+    register: originIsThere
+
+  - name: Delete origin if it is there
+    file: path=/var/lib/origin state=absent
+    when: originIsThere.stat.exists == True
+
+  - name: Create symlinks for docker
+    shell: ln -s /product/var/lib/docker /var/lib/;ln -s /product/var/lib/origin /var/lib/
+  
+   # apt should be changed to yum when using CentOS
+  - name: uninstall docker
+    yum : name=docker state=absent
+    environment:
+      http_proxy : http://10.43.240.11:8080
+      https_proxy : https://10.43.240.11:8080
+
+   
+  - name: install docker
+    yum : name=docker state=present
+    environment:
+      http_proxy : http://10.43.240.11:8080
+      https_proxy : https://10.43.240.11:8080
+    #Here we will ckeck if docker-compose has been installed. the result will be stored in variable compose and be used later in the task install compose
+  - name: check if compose is here
+    stat: path=/usr/local/bin/docker-compose
+    register: compose
+
+  - name: install compose
+    shell: curl -L http://github.com/docker/compose/releases/download/1.5.2/docker-compose-$(uname -s)-$(uname -m) > /usr/local/bin/docker-compose  
+    environment:
+      http_proxy : http://10.43.240.11:8080
+      https_proxy : https://10.43.240.11:8080 
+    when: compose.stat.exists == False  
+
+  - name: change the mode of docker-compose
+    file: path=/usr/local/bin/docker-compose mode="u+x,g+x,o+x"
+
+  - name: download the certificate
+    copy: src=/home/dafu/Desktop/certs.d.tgz dest=/etc/docker/
+
+
+  - name: untar the file
+    unarchive: src=/etc/docker/certs.d.tgz dest=/etc/docker/
+
+  - name: restart docker
+    shell: sudo service docker restart
+
+  - name: Tproxy download
+    shell: (IMAGE="dockerhub.gemalto.com:8500/fredo/tproxy-compose:1.1" ; docker run --rm "$IMAGE" "$IMAGE") > /product/tproxy/docker-compose.yml
+
+  #- name: Define Image name
+  # shell: IMAGE="dockerhub.gemalto.com:8500/fredo/tproxy-compose:1.1"
+
+  #- name: Tproxy image
+  # shell: (IMAGE="dockerhub.gemalto.com:8500/fredo/tproxy-compose:1.1" ; docker run --rm "$IMAGE" "$IMAGE") > docker-compose.yml
+
+  # Above we intergrated 3 taks into one and moved the tproxy to the right repertorire
+  - name: Launch Tproxy
+    shell: export http_proxy="http://10.43.240.11:8080";export https_proxy="http://10.43.240.11:8080";cd /product/tproxy/ ; /usr/local/bin/docker-compose up -d
+    #shell: docker-compose up -d
+    #environment:
+      #http_proxy : http://10.43.240.11:8080
+      #https_proxy : https://10.43.240.11:8080
