@@ -13,13 +13,16 @@ def main():
     facts['kube_node_via_api'] = True
     facts['kube_node_v1'] = True
     facts['kubelet_use_pre_v10_vars'] = False
+    facts['DNS_not_installed'] = True
 
     result = {}
     result['rc'] = 0
     result['changed'] = False
     result['ansible_facts'] = facts
 
-    args = ("kubectl", "version", "-c")
+    #args = ("kubectl", "version", "-c")
+    args = ("kubectl", "version", "--client")
+    #Flag shorthand -c has been deprecated; use --client instead
     popen = subprocess.Popen(args, stdout=subprocess.PIPE)
     popen.wait()
 
@@ -44,8 +47,16 @@ def main():
 
     output = popen.stdout.read()
     if "v1" not in output:
-	facts['kube_node_v1'] = False
+	   facts['kube_node_v1'] = False
 
+    args = ("kubectl", "get", "pods", "--namespace=kube-system")
+    popen = subprocess.Popen(args, stdout=subprocess.PIPE)
+    popen.wait()
+
+    output = popen.stdout.read()
+    if "dns" in output:
+        facts['DNS_not_installed'] = False
+    
     module.exit_json(**result)
 
 # import module snippets
