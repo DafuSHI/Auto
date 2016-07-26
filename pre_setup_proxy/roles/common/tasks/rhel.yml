@@ -80,7 +80,7 @@
   # shell: (IMAGE="dockerhub.gemalto.com:8500/fredo/tproxy-compose:1.1" ; docker run --rm "$IMAGE" "$IMAGE") > docker-compose.yml
 
   # Above we intergrated 3 taks into one and moved the tproxy to the right repertorire
-- name: Launch Tproxy
+- name: Launch Tproxy with parametres
   shell: export http_proxy="http://10.43.240.11:8080";export https_proxy="http://10.43.240.11:8080";cd /product/tproxy/ ; /usr/local/bin/docker-compose up -d
     #shell: docker-compose up -d
     #environment:

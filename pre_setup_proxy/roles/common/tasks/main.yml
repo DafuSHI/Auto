@@ -1,13 +1,17 @@
 ---
-- name: Determine if RHEL7
+- name: Determine if RHEL7 for the task later
   shell: "grep 'Red Hat Enterprise Linux.*release 7' /etc/redhat-release"
   register: is_rhel7
   failed_when: false
   changed_when: false
 - debug: var=is_rhel7
+- debug: var=gc_unique 
 
 - include: rhel.yml
-  when: is_rhel7.rc == 0
+  when: is_rhel7.rc == 0 and gc_unique == 0
 
 - include: ubuntu.yml
-  when: is_rhel7.rc != 0
+  when: is_rhel7.rc != 0 and gc_unique == 0
+
+- include: gc.yml
+

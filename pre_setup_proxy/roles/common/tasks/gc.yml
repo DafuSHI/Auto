@@ -1,0 +1,55 @@
+---
+- name: print docker version to a file
+  shell: docker version > /tmp/docker_version
+
+- name: Verify if the version of the docker is 1.9 
+  shell: "grep '1.9' /tmp/docker_version"
+  register: is_19
+  failed_when: false
+  changed_when: false
+- debug: var=is_19
+
+- name: Verify if the version of the docker is 1.8
+  shell: "grep '1.8' /tmp/docker_version"
+  register: is_18
+  failed_when: false
+  changed_when: false
+- debug: var=is_18
+
+- name: Verify if the version of the docker is 1.10
+  shell: "grep '1.10' /tmp/docker_version"
+  register: is_110
+  failed_when: false
+  changed_when: false
+- debug: var=is_110
+ 
+- name: pull images for 1.9
+  shell: docker pull dockerhub.gemalto.com:8500/spotify/docker-gc:1.9.1
+  when: is_19.rc == 0
+
+- name: pull images for 1.8
+  shell: docker pull dockerhub.gemalto.com:8500/spotify/docker-gc:1.8.2
+  when: is_18.rc == 0
+
+- name: No images for 1.10
+  shell: echo "nothing"
+  when: is_110.rc == 0
+
+
+- name: check if docker-gc.sh is already there
+  stat: path=/etc/cron.daily/docker-gc.sh
+  register: dockergc
+
+- name: create docker-gc.sh for 1.9.1
+  shell: echo -e  "#!/bin/bash\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc dockerhub.gemalto.com:8500/spotify/docker-gc:1.9.1" > /etc/cron.daily/docker-gc.sh
+  when: dockergc.stat.exists == False and is_19.rc == 0
+
+- name: create docker-gc.sh for 1.8.2
+  shell: echo -e  "#!/bin/bash\ndocker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v /etc:/etc dockerhub.gemalto.com:8500/spotify/docker-gc:1.8.2" > /etc/cron.daily/docker-gc.sh
+  when: dockergc.stat.exists == False and is_18.rc == 0
+
+- name: write  logrotate
+  shell: sed -e '6crotate 0' /etc/logrotate.conf > /tmp/logrotate.conf
+
+- name: upload logrotate
+  shell: rm -f /etc/logrotate.conf && mv /tmp/logrotate.conf /etc/logrotate.conf

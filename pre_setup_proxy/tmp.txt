@@ -1,0 +1,17 @@
+Client:
+ Version:         1.10.3
+ API version:     1.22
+ Package version: docker-common-1.10.3-44.el7.x86_64
+ Go version:      go1.4.2
+ Git commit:      7ffc8ee-unsupported
+ Built:           Fri Jun 17 15:27:21 2016
+ OS/Arch:         linux/amd64
+
+Server:
+ Version:         1.10.3
+ API version:     1.22
+ Package version: docker-common-1.10.3-44.el7.x86_64
+ Go version:      go1.4.2
+ Git commit:      7ffc8ee-unsupported
+ Built:           Fri Jun 17 15:27:21 2016
+ OS/Arch:         linux/amd64

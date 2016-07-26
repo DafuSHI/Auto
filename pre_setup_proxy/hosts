@@ -1,9 +1,5 @@
 [all]
-vgerndvud1672
-localhost ansible_connection=local
-[vm_openshift]
-vgerndvud1672
-[vm_kubernetes]
-10.10.163.95 
-[local]
-localhost ansible_connection=local
+10.10.163.98 ansible_ssh_pass=Sdf9207041 ansible_ssh_user=dafshi gc_unique=1
+localhost ansible_connection=local gc_unique=1
+[remote]
+10.10.163.98 ansible_ssh_pass=Sdf9207041 ansible_ssh_user=dafshi
