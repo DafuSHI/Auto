@@ -47,7 +47,7 @@ def main():
 
     output = popen.stdout.read()
     if "v1" not in output:
-	   facts['kube_node_v1'] = False
+        facts['kube_node_v1'] = False
 
     args = ("kubectl", "get", "pods", "--namespace=kube-system")
     popen = subprocess.Popen(args, stdout=subprocess.PIPE)
