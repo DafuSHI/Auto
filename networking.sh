@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # Setup the OpenVswitch
-/kubernetes-ansible/old-network-config/ansible-playbook -i inventory hack-ovs.yml
+ansible-playbook -i /kubernetes-ansible/old-network-config/inventory hack-ovs.yml
 
