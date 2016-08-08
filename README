@@ -1,7 +1,7 @@
 This is an automation script for deploying kubernetes in a fast way. You should point out in the inventory files which mahcine you want to be master and which machines can be minion. Exemples are shown in it. The networking is set to use OpenVswitch,while there are other options too.
 
 Pre-request:
-Docker daemon 1.10.1
+Docker daemon 1.10.1 or Docker daemon 1.9.1
 
 Step0:
 
@@ -12,7 +12,7 @@ Step 1:
 
 ./proxy.sh
 
-This is for setting the proxy for the machine inside in network of Gemalto
+This is for setting the proxy for the machines
 
 
 Step 2:
