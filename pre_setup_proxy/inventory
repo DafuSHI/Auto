@@ -5,5 +5,5 @@
 10.10.163.95
 
 [minions]
-10.10.163.95  kube_ip_addr=10.0.5.1 kube_overlay_ip=10.0.0.0 kube_overlay_prefix=16
-10.10.163.93  kube_ip_addr=10.0.3.1 kube_overlay_ip=10.0.0.0 kube_overlay_prefix=16
+10.10.163.95  kube_ip_addr=10.0.5.1 kube_overlay_ip=10.0.0.0 kube_overlay_prefix=16 ansible_ssh_user=XXX
+10.10.163.93  kube_ip_addr=10.0.3.1 kube_overlay_ip=10.0.0.0 kube_overlay_prefix=16 ansible_ssh_user=XXX
