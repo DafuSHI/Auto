@@ -1,5 +1,5 @@
 #!/bin/bash
 
 # Setup the proxy for all the machine
-/pre_setup_proxy/ansible-playbook -i inventory setup.yml
+ansible-playbook -i /pre_setup_proxy/inventory setup.yml
 
