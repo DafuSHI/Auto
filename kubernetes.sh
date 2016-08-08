@@ -1,4 +1,4 @@
 #!/bin/bash/
 
 #Install kubernetes 
-/kubernetes-ansible/ansible-playbook -i inventory setup.yml
+ansible-playbook -i /kubernetes-ansible/inventory setup.yml
